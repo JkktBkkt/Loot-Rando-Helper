@@ -1,0 +1,6 @@
+[submodule "core.system.windows.forms"]
+	path = system.windows.forms
+	url = https://bitbucket.org/mfeemster/system.windows.forms.git
+[submodule "BL2_Data"]
+	path = BL2_Data
+	url = https://github.com/NickPoirier/BL2_Data.git

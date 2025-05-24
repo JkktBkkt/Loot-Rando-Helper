@@ -1,3 +1,6 @@
+global using System.Windows.Forms;
+global using System.Drawing;
+
 namespace BL2_Test_Loot_Rando
 {
     internal static class Program
@@ -8,9 +11,11 @@ namespace BL2_Test_Loot_Rando
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
+            // Older style of customization options for support of other platforms
+            // TODO: Replace with #if ?
+            // Didn't work with #if WINDOWS because winforms still "target" windows
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main_Form());
             //Application.Run(new Form1());
         }

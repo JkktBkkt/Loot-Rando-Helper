@@ -2,14 +2,31 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFrameworks>net8.0-windows;net8.0</TargetFrameworks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>BL2_Test_Loot_Rando</RootNamespace>
     <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>Resources\loot_rando.ico</ApplicationIcon>
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
+  
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net8.0-windows' and '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))'">
+      <PropertyGroup>
+        <UseWindowsForms>true</UseWindowsForms>
+      </PropertyGroup>
+      <ItemGroup>
+      	<PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\system.windows.forms\System.Windows.Forms\System.Windows.Forms.csproj"/>
+        <ProjectReference Include="..\system.windows.forms\System.Drawing.Common\System.Drawing.Common.csproj"/>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 
   <ItemGroup>
     <None Remove="Resources\axton1.png" />
@@ -44,7 +61,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BL2_Data\BL2_Data\BL2_Data.csproj" />
+    <ProjectReference Include="..\BL2_Data\BL2_Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

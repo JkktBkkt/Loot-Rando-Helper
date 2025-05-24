@@ -40,8 +40,11 @@ namespace BL2_Test_Loot_Rando
         public Main_Form()
         {
             InitializeComponent();
-
-            Icon = Properties.Resources.loot_rando;
+            
+            if (OperatingSystem.IsWindows())
+            {
+                Icon = Properties.Resources.loot_rando;
+            }
 
             typeof(Control).InvokeMember("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty, null, seed_dgv, [true]);
             typeof(Control).InvokeMember("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty, null, weap_dgv, [true]);
