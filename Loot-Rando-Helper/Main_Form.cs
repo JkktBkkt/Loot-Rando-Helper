@@ -258,28 +258,51 @@ namespace BL2_Test_Loot_Rando
         // --------------------------------------------------------------------------------------------------------------------------------------------
         private void Main_Form_Load(object sender, EventArgs e)
         {
-            bl2_steam_folders = Find_Games.Search_Registry_For_Steam_BL2();
-
+            if (OperatingSystem.IsWindows())
+                bl2_steam_folders = Find_Games.Search_Registry_For_Steam_BL2();
+            else
+            {
+                bl2_steam_folders = new List<string>();
+                bl2_steam_folders.Add(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.local/share/Steam/steamapps/common");
+            }
             if (bl2_steam_folders.Count < 1)
                 steam_library_folders_rtb.Text = "No Steam libraries found.";
             else
                 Populate_Seeds();
-
-            bl2 = JsonConvert.DeserializeObject<BL2_Data>(File.ReadAllText("bl2_v2.json"));
-
-            if (bl2 != null)
+            bl2 = null;
+            try
             {
-                Loot.bl2 = bl2;
-                Meo.bl2 = bl2;
-                Map.bl2 = bl2;
+                bl2 = JsonConvert.DeserializeObject<BL2_Data>(File.ReadAllText("bl2_v2.json"));
+                if (bl2 != null)
+                {
+                    Loot.bl2 = bl2;
+                    Meo.bl2 = bl2;
+                    Map.bl2 = bl2;
 
-                BL2_Data.char_class = currently_selected_char_class;
-                bl2.Update_Lists_and_Totals();
+                    BL2_Data.char_class = currently_selected_char_class;
+                    bl2.Update_Lists_and_Totals();
 
-                Show_All_Data();
+                    Show_All_Data();
+                }
+                else
+                    MessageBox.Show("Error - found bl2_v2.json but it's NULL");
             }
-            else
-                MessageBox.Show("Error - BL2 is NULL");
+            catch (FileNotFoundException exc) 
+            {
+                MessageBox.Show(
+@"Error - bl2_v2.json not found. 
+
+Download it from:
+https://github.com/NickPoirier/bl2.json/raw/refs/heads/main/bl2_v2.json
+
+And put into program's folder:" + "\n" + exc.FileName);
+                
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error - Reading bl2_v2.json failed.\nHint: Make sure both it and Helper are using up-to-date versions");
+                throw;
+            }
         }
 
         // --------------------------------------------------------------------------------------------------------------------------------------------
@@ -735,7 +758,11 @@ namespace BL2_Test_Loot_Rando
                         bl2_root_folder = sub_folders[0];
                         bl2_folder_rtb.Text = bl2_root_folder;
 
-                        string seeds_path = bl2_root_folder + @"\Binaries\Win32\Mods\LootRandomizer\Seeds";
+                        string seeds_path = "";
+                        if(OperatingSystem.IsWindows())
+                            seeds_path = bl2_root_folder + @"\Binaries\Win32\Mods\LootRandomizer\Seeds";
+                        else
+                            seeds_path = bl2_root_folder + @"/sdk_mods/LootRandomizer/Seeds";
                         if (Path.Exists(seeds_path))
                         {
                             bl2_seeds_folder = seeds_path;
